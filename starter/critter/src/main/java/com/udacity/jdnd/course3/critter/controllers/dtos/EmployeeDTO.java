@@ -1,4 +1,6 @@
-package com.udacity.jdnd.course3.critter.user;
+package com.udacity.jdnd.course3.critter.controllers.dtos;
+
+import com.udacity.jdnd.course3.critter.controllers.enums.EmployeeSkillEnum;
 
 import java.time.DayOfWeek;
 import java.util.Set;
@@ -10,7 +12,7 @@ import java.util.Set;
 public class EmployeeDTO {
     private long id;
     private String name;
-    private Set<EmployeeSkill> skills;
+    private Set<EmployeeSkillEnum> skills;
     private Set<DayOfWeek> daysAvailable;
 
     public long getId() {
@@ -29,11 +31,11 @@ public class EmployeeDTO {
         this.name = name;
     }
 
-    public Set<EmployeeSkill> getSkills() {
+    public Set<EmployeeSkillEnum> getSkills() {
         return skills;
     }
 
-    public void setSkills(Set<EmployeeSkill> skills) {
+    public void setSkills(Set<EmployeeSkillEnum> skills) {
         this.skills = skills;
     }
 

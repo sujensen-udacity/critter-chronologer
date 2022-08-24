@@ -1,4 +1,6 @@
-package com.udacity.jdnd.course3.critter.pet;
+package com.udacity.jdnd.course3.critter.controllers.dtos;
+
+import com.udacity.jdnd.course3.critter.controllers.enums.PetType;
 
 import java.time.LocalDate;
 
