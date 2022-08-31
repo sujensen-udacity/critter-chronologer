@@ -5,6 +5,7 @@ import org.hibernate.annotations.Nationalized;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 public class Pet {
@@ -21,6 +22,9 @@ public class Pet {
     @JoinColumn(name = "customer_id")
     private Customer customer;
 
+    @ManyToMany
+    @JoinTable(name="pet_schedule", joinColumns = {@JoinColumn(name="schedule_id")}, inverseJoinColumns = {@JoinColumn(name="pet_id")})
+    private List<Schedule> schedules;
 
     @Enumerated(EnumType.STRING)
     private PetType type;
@@ -75,5 +79,13 @@ public class Pet {
 
     public void setNotes(String notes) {
         this.notes = notes;
+    }
+
+    public List<Schedule> getSchedules() {
+        return schedules;
+    }
+
+    public void setSchedules(List<Schedule> schedules) {
+        this.schedules = schedules;
     }
 }

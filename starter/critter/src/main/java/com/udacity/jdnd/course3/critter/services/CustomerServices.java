@@ -16,12 +16,8 @@ public class CustomerServices {
     CustomerRepository customerRepo;
 
     public Long saveCustomer(Customer customer) {
-        if (customerRepo.findByName(customer.getName()) == null) {
-            Customer newCust = customerRepo.save(customer);
-            return newCust.getId();
-        } else {
-            throw new RuntimeException("customer by that name already exists");
-        }
+        Customer newCust = customerRepo.save(customer);
+        return newCust.getId();
     }
 
     public Customer getCustomer(Long id) {

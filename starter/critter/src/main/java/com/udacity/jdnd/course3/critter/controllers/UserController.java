@@ -3,15 +3,17 @@ package com.udacity.jdnd.course3.critter.controllers;
 import com.udacity.jdnd.course3.critter.controllers.dtos.CustomerDTO;
 import com.udacity.jdnd.course3.critter.controllers.dtos.EmployeeDTO;
 import com.udacity.jdnd.course3.critter.controllers.dtos.EmployeeRequestDTO;
-import com.udacity.jdnd.course3.critter.controllers.enums.EmployeeSkillEnum;
-import com.udacity.jdnd.course3.critter.entities.*;
+import com.udacity.jdnd.course3.critter.controllers.enums.EmployeeSkill;
+import com.udacity.jdnd.course3.critter.entities.Customer;
+import com.udacity.jdnd.course3.critter.entities.Employee;
+import com.udacity.jdnd.course3.critter.entities.Pet;
 import com.udacity.jdnd.course3.critter.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -29,12 +31,6 @@ public class UserController {
     EmployeeServices employeeServices;
 
     @Autowired
-    SkillServices skillServices;
-
-    @Autowired
-    DayServices dayServices;
-
-    @Autowired
     PetServices petServices;
 
     @Autowired
@@ -45,11 +41,9 @@ public class UserController {
         // name
         employee.setName(employeeDTO.getName());
         // skills
-        Set<Skill> newSkills = convertSkillToEntity(employeeDTO.getSkills());
-        employee.setSkills(newSkills);
+        employee.setSkills(employeeDTO.getSkills());
         // days available
-        Set<Day> days = convertDayOfWeekToEntity(employeeDTO.getDaysAvailable());
-        employee.setDays(days);
+        employee.setDays(employeeDTO.getDaysAvailable());
         return employee;
     }
 
@@ -59,57 +53,10 @@ public class UserController {
         employeeDTO.setId(employee.getId());
         employeeDTO.setName(employee.getName());
         // skills
-        Set<EmployeeSkillEnum> skills = convertSkillsToEnum(employee.getSkills());
-        employeeDTO.setSkills(skills);
+        employeeDTO.setSkills(employee.getSkills());
         // days available
-        Set<DayOfWeek> days = convertDaytoEnum(employee.getDays());
-        employeeDTO.setDaysAvailable(days);
+        employeeDTO.setDaysAvailable(employee.getDays());
         return employeeDTO;
-    }
-
-    private Set<Skill> convertSkillToEntity(Set<EmployeeSkillEnum> skills) {
-        Set<Skill> skillRet = new HashSet<Skill>();
-        if (skills != null) {
-            for (EmployeeSkillEnum en : skills) {
-                Skill s = new Skill();
-                s.setName(en);
-                skillRet.add(s);
-            }
-        }
-        return skillRet;
-    }
-
-    private Set<EmployeeSkillEnum> convertSkillsToEnum(Set<Skill> skills) {
-        Set<EmployeeSkillEnum> skillEn = new HashSet<EmployeeSkillEnum>();
-        if (skills != null) {
-            for (Skill s : skills) {
-                EmployeeSkillEnum en = s.getName();
-                skillEn.add(en);
-            }
-        }
-        return skillEn;
-    }
-
-
-    private Set<Day> convertDayOfWeekToEntity(Set<DayOfWeek> dayOfWeek) {
-        Set<Day> days = new HashSet<Day>();
-        if (dayOfWeek != null) {
-            for (DayOfWeek dw : dayOfWeek) {
-                Day newDay = dayServices.getDayByName(dw);
-                days.add(newDay);
-            }
-        }
-        return days;
-    }
-
-    private Set<DayOfWeek> convertDaytoEnum(Set<Day> days) {
-        Set<DayOfWeek> dow = new HashSet<DayOfWeek>();
-        if (days != null) {
-            for (Day d : days) {
-                dow.add(d.getDayofweek());
-            }
-        }
-        return dow;
     }
 
     private Customer convertCustomerDTOToEntity(CustomerDTO customerDTO) {
@@ -178,13 +125,20 @@ public class UserController {
     @PutMapping("/employee/{employeeId}")
     public void setAvailability(@RequestBody Set<DayOfWeek> daysAvailable, @PathVariable long employeeId) {
         Employee employee = employeeServices.getEmployee(employeeId);
-        Set<Day> availability = convertDayOfWeekToEntity(daysAvailable);
-        employeeServices.saveEmployeeAvailability(availability, employee);
+        employeeServices.saveEmployeeAvailability(daysAvailable, employee);
     }
 
     @GetMapping("/employee/availability")
     public List<EmployeeDTO> findEmployeesForService(@RequestBody EmployeeRequestDTO employeeDTO) {
-        throw new UnsupportedOperationException();
+        List<EmployeeDTO> employeeDTOs = new ArrayList<>();
+        LocalDate reqDate = employeeDTO.getDate();
+        DayOfWeek reqDOW = reqDate.getDayOfWeek();
+        Set<EmployeeSkill> reqSkills = employeeDTO.getSkills();
+        Set<Employee> employees = employeeServices.getEmployeeByAvailabilitySkills(reqDOW, reqSkills);
+        for (Employee e : employees) {
+            employeeDTOs.add(convertEntityToEmployeeDTO(e));
+        }
+        return employeeDTOs;
     }
 
 }

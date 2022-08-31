@@ -1,6 +1,6 @@
 package com.udacity.jdnd.course3.critter.controllers.dtos;
 
-import com.udacity.jdnd.course3.critter.controllers.enums.EmployeeSkillEnum;
+import com.udacity.jdnd.course3.critter.controllers.enums.EmployeeSkill;
 
 import java.time.LocalDate;
 import java.util.Set;
@@ -10,14 +10,14 @@ import java.util.Set;
  * to the database directly.
  */
 public class EmployeeRequestDTO {
-    private Set<EmployeeSkillEnum> skills;
+    private Set<EmployeeSkill> skills;
     private LocalDate date;
 
-    public Set<EmployeeSkillEnum> getSkills() {
+    public Set<EmployeeSkill> getSkills() {
         return skills;
     }
 
-    public void setSkills(Set<EmployeeSkillEnum> skills) {
+    public void setSkills(Set<EmployeeSkill> skills) {
         this.skills = skills;
     }
 
